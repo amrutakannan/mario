@@ -1,10 +1,12 @@
-var bg,bgImg,brick,brickImg,ground,groundImg;
-var mario,marioAnim,obstacle,obstacleAnim;
+var bg,bgImg,brick,brickImg,ground,groundImg,coin,coinImg;
+var mario,marioAnim,obstacle,obstacleAnim, goomba,goombaAnim;
 var restart, restartImg,gameOver, gameOverImg;
 var marioCollided, marioCollidedImg;
 var dieSound,chkPointSound,jumpSound;
-var brickGroup,obstacleGroup;
+var brickGroup,obstacleGroup, coinGroup;
+var invisibleGoomba;
 var score=0;
+var highScore;
 const PLAY=1;
 const END=0;
 var gameState=PLAY;
@@ -14,9 +16,11 @@ function preload()
   bgImg=loadImage("bg.png");
   brickImg=loadImage("brick.png");
   groundImg=loadImage("ground2.png");
+  coinImg=loadImage("coin1.png");
   
   marioAnim=loadAnimation("mario00.png","mario01.png","mario02.png","mario03.png");
   obstacleAnim=loadAnimation("obstacle1.png","obstacle2.png","obstacle3.png","obstacle4.png");
+  goombaAnim=loadAnimation("goomba1.png","goomba2.png","goomba3.png");
   
   restartImg=loadImage("restart.png");
   gameOverImg=loadImage("gameOver.png");
@@ -29,7 +33,7 @@ function preload()
   
   brickGroup=new Group();
   obstacleGroup=new Group();
-  
+  coinGroup=new Group();
 }
 
 function setup()
@@ -44,7 +48,7 @@ function setup()
   ground.velocityX=-8;
   
   ground.setCollider("rectangle",0,0,ground.width,72);
-  ground.debug=true;
+  //ground.debug=true;
   
   mario=createSprite(50,276);  
   mario.addAnimation("mario",marioAnim);
@@ -60,12 +64,18 @@ function setup()
   gameOver.addImage("gameover",gameOverImg);
   gameOver.scale=0.4;
   gameOver.visible=false;
+
+  goomba=createSprite(625,280);
+  goomba.addAnimation("goomba",goombaAnim);
+  invisibleGoomba=createSprite(625,280-goomba.height/2-20,goomba.width-10,5);
+  invisibleGoomba.visible=true;
   
   
 }
 
 function draw()
 {
+  highScore=localStorage["marioScore"];
   if(gameState==PLAY)
   {
     //restart.visible=false;
@@ -84,10 +94,35 @@ function draw()
       
 
       spawnBricks();
+      spawnCoins();
       spawnObstacles();
+      spawnGoomba();
 
       brickGroup.collide(mario,breakBricks);
+      coinGroup.collide(mario, getCoins);
       obstacleGroup.collide(mario,endMario);
+      
+      
+      if(goomba.x<-10)
+      {
+        goomba.x=625;
+        goomba.velocityX=0;
+        invisibleGoomba.x=625;
+        invisibleGoomba.velocityX=0;
+      }
+      if(invisibleGoomba.isTouching(mario))
+      {
+        console.log("invisible goomba touching mario");
+        goomba.velocityX=-20;
+        invisibleGoomba.velocityX=-20;
+        score=score+5;
+      }
+      else
+       if(goomba.isTouching(mario))
+       {
+        console.log("Visible goomba touching mario");
+         endMario(goomba,mario);
+       }
       
   }
   console.log(gameState);
@@ -95,9 +130,9 @@ function draw()
   {
       restart.visible=true;
       gameOver.visible=true;
-      console.log("in END");
+//      console.log("in END");
       ground.velocityX=0;
-    obstacleGroup.collide(ground);
+      obstacleGroup.collide(ground);
       obstacleGroup.setLifetimeEach(-1);
       brickGroup.setLifetimeEach(-1);
       obstacleGroup.setVelocityXEach(0);
@@ -112,6 +147,11 @@ function draw()
       mario.collide(ground);
       drawSprites();
       scoreBoard();
+      if(score%5===0)
+      {
+        chkPointSound.play();
+      }
+
 }
 
 function spawnBricks()
@@ -132,14 +172,29 @@ function spawnBricks()
 
 function spawnObstacles()
 {
-  if(frameCount%100 === 0)
+  
+  if(frameCount%240 === 0)
   {
     obstacle=createSprite(605,280);
     obstacle.addAnimation("obstacle",obstacleAnim);
     obstacle.scale=1;
-    obstacle.velocityX=-4;
+    obstacle.velocityX=-8;
     obstacle.lifetime=150;
     obstacleGroup.add(obstacle);
+  }
+}
+
+function spawnGoomba()
+{
+  var rand=Math.round(random(1,2));
+  if(frameCount%180 === 0)
+  {
+    console.log("Rand:"+rand);
+    if(rand===1)
+    { 
+      goomba.velocityX=-8;
+      invisibleGoomba.velocityX=-8;
+    }
   }
 }
 
@@ -148,11 +203,18 @@ function breakBricks(thisBrick, callb)
   //text("+100",a.x,a.y);
   //console.log(typeOf callb);
   thisBrick.destroy();
+  score=score+2; 
+  
+  
+}
+
+function getCoins(thisCoin, callb)
+{
+  //text("+100",a.x,a.y);
+  //console.log(typeOf callb);
+  thisCoin.destroy();
   score=score+1; 
-  if(score%5===0)
-  {
-    chkPointSound.play();
-  }
+  
   
 }
 
@@ -173,6 +235,23 @@ function endMario(thisObstacle,mar)
   //thisObstacle.destroy();
 }
 
+function spawnCoins()
+{
+  var rand;
+  rand=Math.round(random(50,230));
+  if(frameCount%30 === 0)
+  {
+    coin=createSprite(605,rand,100,100);
+    coin.addImage(coinImg);
+    coin.scale=0.05;
+    coin.velocityX=-8;
+    coin.lifetime=75;
+    mario.depth=coin.depth+1;
+    coinGroup.add(coin);
+  } 
+
+}
+
 function scoreBoard()
 {
   
@@ -180,6 +259,7 @@ function scoreBoard()
   fill("black");
   textSize(15);
   text("Score: "+score,500,40); 
+  text("HighScore: "+highScore,350,40);
 }
 
 function reset()
@@ -193,5 +273,7 @@ function reset()
   
   mario.changeAnimation("mario",marioAnim);
   ground.velocityX=-8;
+  if(highScore<score)
+     localStorage.setItem("marioScore",score);
   score=0;
 }
