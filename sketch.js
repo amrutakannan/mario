@@ -75,7 +75,10 @@ function setup()
 
 function draw()
 {
-  highScore=localStorage["marioScore"];
+  if (localStorage["marioScore"])
+      highScore=localStorage["marioScore"];
+  else
+      highScore=0;
   if(gameState==PLAY)
   {
     //restart.visible=false;
