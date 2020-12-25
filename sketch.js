@@ -75,7 +75,7 @@ function setup()
 
 function draw()
 {
-  if (localStorage.getItem("marioScore"))
+  if (localStorage.getItem("marioScore") !== undefined )
       localStorage.setItem("marioScore",highScore);
   else
       highScore=0;
@@ -280,6 +280,8 @@ function reset()
   
   mario.changeAnimation("mario",marioAnim);
   ground.velocityX=-8;
+  if(chkPointSound.isPlaying())
+     chkPointSound.stop();
   if(highScore<score)
      localStorage.setItem("marioScore",score);
   score=0;
