@@ -124,6 +124,7 @@ function draw()
        if(goomba.isTouching(mario))
        {
         console.log("Visible goomba touching mario");
+         dieSound.play();
          endMario(goomba,mario);
        }
       
