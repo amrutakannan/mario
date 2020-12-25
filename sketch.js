@@ -273,6 +273,9 @@ function reset()
   
   obstacleGroup.destroyEach();
   brickGroup.destroyEach();
+  coinGroup.destroyEach();
+  goomba.x=625;
+  goomba.velocityX=0;
   
   mario.changeAnimation("mario",marioAnim);
   ground.velocityX=-8;
