@@ -138,8 +138,10 @@ function draw()
       obstacleGroup.collide(ground);
       obstacleGroup.setLifetimeEach(-1);
       brickGroup.setLifetimeEach(-1);
+      coinGroup.setLifetimeEach(-1);
       obstacleGroup.setVelocityXEach(0);
       brickGroup.setVelocityXEach(0);
+      coinGroupo.setVelocityXEach(0);
 
       if(mousePressedOver(restart))
       { 
