@@ -84,6 +84,7 @@ function draw()
   {
      console.log("local stirage not define");
       highScore=0;
+  }
   if(gameState==PLAY)
   {
     //restart.visible=false;
