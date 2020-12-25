@@ -68,7 +68,7 @@ function setup()
   goomba=createSprite(625,280);
   goomba.addAnimation("goomba",goombaAnim);
   invisibleGoomba=createSprite(625,280-goomba.height/2-20,goomba.width-10,5);
-  invisibleGoomba.visible=true;
+  invisibleGoomba.visible=false;
   
   
 }
