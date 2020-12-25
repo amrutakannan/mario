@@ -75,14 +75,14 @@ function setup()
 
 function draw()
 {
-  if (window.localStorage.getItem("marioScore") !== undefined )
+  if (window.localStorage.length>0 )
   {
       localStorage.setItem("marioScore",highScore);
-      console.log("local storage defined")
+      console.log("local storage ldefined")
   }
   else
   {
-     console.log("local stirage not define");
+     console.log("local stirage not ldefine");
       highScore=0;
   }
   if(gameState==PLAY)
