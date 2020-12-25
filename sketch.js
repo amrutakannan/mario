@@ -209,8 +209,6 @@ function breakBricks(thisBrick, callb)
   //console.log(typeOf callb);
   thisBrick.destroy();
   score=score+2; 
-  
-  
 }
 
 function getCoins(thisCoin, callb)
