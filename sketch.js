@@ -141,7 +141,7 @@ function draw()
       coinGroup.setLifetimeEach(-1);
       obstacleGroup.setVelocityXEach(0);
       brickGroup.setVelocityXEach(0);
-      coinGroupo.setVelocityXEach(0);
+      coinGroup.setVelocityXEach(0);
 
       if(mousePressedOver(restart))
       { 
