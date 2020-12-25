@@ -75,8 +75,8 @@ function setup()
 
 function draw()
 {
-  if (localStorage["marioScore"])
-      highScore=localStorage["marioScore"];
+  if (localStorage.getItem("marioScore"))
+      localStorage.setItem("marioScore",highScore);
   else
       highScore=0;
   if(gameState==PLAY)
